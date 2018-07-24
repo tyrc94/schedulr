@@ -3,7 +3,7 @@ let s = ReactDOMRe.Style.make;
 
 [%mui.withStyles
   "Styled"({
-    paper: s(~flex="1", ())
+    paper: s(~display="flex", ~flex="1", ~alignItems="center", ~justifyContent="center", ~padding="10px", ()),
   })
 ];
 
@@ -14,7 +14,9 @@ let make = (_children) => {
   render: (_self) =>
     <Styled render=(classes =>
       <U.Paper className=classes.paper>
-        {ReasonReact.string("Login")}
+        <div>
+          {ReasonReact.string("Login")}
+        </div>
       </U.Paper>
     )/>
 };
