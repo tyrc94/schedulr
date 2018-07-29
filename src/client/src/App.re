@@ -1,32 +1,32 @@
 [%bs.raw {|require('./App.css')|}];
 
 type state = {
-  isLoggedIn: bool
+  appState: option(AppState.t)
 };
 
 type action =
-  | LogIn
+  | LogIn(AppState.t)
 ;
 
 let component = ReasonReact.reducerComponent("App");
 
 let make = (_children) => {
   ...component,
-  initialState: () => { isLoggedIn: false },
+  initialState: () => { appState: None },
   reducer: (action, state) => {
     switch (action) {
-    | LogIn => ReasonReact.Update({ isLoggedIn: true })
+    | LogIn(appState) => ReasonReact.Update({ appState: Some(appState) })
     }
   },
   render: (self) =>
     <div className="App">
-      <Header />
+      <Header appState=self.state.appState/>
 
       <div className="app-body">
         {
-          switch self.state.isLoggedIn {
-          | true => <Main />
-          | false => <Login />
+          switch self.state.appState {
+          | Some(_appState) => <Main />
+          | None => <Login onSubmit={ (username, password) => { LogIn(AppState.create(~username, ~password, ())) |> self.send } } />
           };
         }
       </div>
