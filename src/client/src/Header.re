@@ -15,7 +15,7 @@ let s = ReactDOMRe.Style.make;
 
 let component = ReasonReact.statelessComponent("Header");
 
-let make = (_children) => {
+let make = (~appState: option(AppState.t), _children) => {
   ...component,
   render: (_self) =>
     <Styled render=(classes =>
@@ -28,7 +28,12 @@ let make = (_children) => {
             <U.Typography variant=`Title color=`Inherit className=classes.flex>
               {ReasonReact.string("Schedulr")}
             </U.Typography>
-            <U.Button color=`Inherit>{ReasonReact.string("Login")}</U.Button>
+            {
+              switch appState {
+              | None => <U.Button color=`Inherit>{ReasonReact.string("Login")}</U.Button>
+              | Some(appState) => {ReasonReact.string(appState.username)}
+              };
+            }
           </U.Toolbar>
         </U.AppBar>
       </div>
