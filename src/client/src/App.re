@@ -1,34 +1,43 @@
 [%bs.raw {|require('./App.css')|}];
 
 type state = {
-  appState: option(AppState.t)
+  user: option(User.t)
 };
 
 type action =
-  | LogIn(AppState.t)
+  | LogIn(User.t)
 ;
 
 let component = ReasonReact.reducerComponent("App");
 
 let make = (_children) => {
-  ...component,
-  initialState: () => { appState: None },
-  reducer: (action, state) => {
-    switch (action) {
-    | LogIn(appState) => ReasonReact.Update({ appState: Some(appState) })
-    }
-  },
-  render: (self) =>
-    <div className="App">
-      <Header appState=self.state.appState/>
+  let login = ((username, password), self) => {
+    User.login(username, password)
+      |> Js.Promise.then_ (
+        (user) => self.ReasonReact.send(LogIn(user)) |> Js.Promise.resolve
+      )
+      |> ignore
+  };
+  {
+    ...component,
+    initialState: () => { user: None },
+    reducer: (action, _state) => {
+      switch (action) {
+      | LogIn(user) => ReasonReact.Update({ user: Some(user) })
+      }
+    },
+    render: (self) =>
+      <div className="App">
+        <Header user=self.state.user/>
 
-      <div className="app-body">
-        {
-          switch self.state.appState {
-          | Some(_appState) => <Main />
-          | None => <Login onSubmit={ (username, password) => { LogIn(AppState.create(~username, ~password, ())) |> self.send } } />
-          };
-        }
+        <div className="app-body">
+          {
+            switch self.state.user {
+            | Some(_user) => <Main />
+            | None => <Login onSubmit={ self.handle(login) } />
+            };
+          }
+        </div>
       </div>
-    </div>
+  }
 };
