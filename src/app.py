@@ -44,7 +44,9 @@ def signup():
 
 @app.route('/authenticate/login', methods = ['POST'])
 def authenticate():
-    user = db.db.check_login(request.get_json('user'), request.get_json('password'))
+    data = request.get_json()
+
+    user = db.db.check_login(data.get('username'), data.get('password'))
     if not user:
         failure = {'message': 'Invalid credentials', 'status': 401}
         return jsonify(failure)
@@ -55,7 +57,7 @@ def authenticate():
             'username': user['username'],
             'forename': user['forename'],
             'surname': user['surname'],
-            'token': token
+            'token': str(token)
         }
         return jsonify(success)
 
@@ -68,11 +70,12 @@ def get_user(user_id):
 
 @app.route('/task/create', methods = ['POST'])
 def create_task():
+    data = request.get_json()
 
     task_details = {
-        'name': request.get_json('name'),
-        'description': request.get_json('description'),
-        'priority': request.get_json('priority')
+        'name': data.get('name'),
+        'description': data.get('description'),
+        'priority': data.get('priority')
     }
 
     db.db.create_task(**task_details)
