@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS `priority` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	`level`	TEXT NOT NULL
 );
+INSERT INTO priority (level) VALUES ('Lowest'), ('Low'), ('Medium'), ('High'), ('Highest');
+
 
 CREATE TABLE IF NOT EXISTS `tasks` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
