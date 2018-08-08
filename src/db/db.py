@@ -58,10 +58,10 @@ def check_login(username, password):
 
 def register(username, password, forename, surname):
     try:
-        _ = mutate_db("INSERT INTO User (email, password, forename, surname) VALUES (?,?,?,?)",
+        _ = mutate_db("INSERT INTO users (username, password, forename, surname) VALUES (?,?,?,?)",
                     [username, password, forename, surname])
         return True
-    except Exception:
+    except Exception as e:
         return False
 
 

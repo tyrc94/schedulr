@@ -19,26 +19,32 @@ def server_js():
 
 @app.route('/signup', methods = ['POST'])
 def signup():
+    data = request.get_json()
+
     success = db.db.register(
-                                request.get_json('username'),
-                                request.get_json('password'),
-                                request.get_json('forename'),
-                                request.get_json('surname')  
+                                data.get('username'),
+                                data.get('password'),
+                                data.get('forename'),
+                                data.get('surname')  
                             )  
 
-    if success:
+    if not success:
+        return "ERROR"
+    else:
         identity = {
-                'username': request.get_json('username'),
-                'password': request.get_json('password'),
-                'forename': request.get_json('forename'),
-                'surname': request.get_json('surname') 
+                'username': data.get('username'),
+                'password': data.get('password'),
+                'forename': data.get('forename'),
+                'surname': data.get('surname') 
             }
-        return jsonify(identity)
+
+        return jsonify(identity), 200
+
         
 
 @app.route('/authenticate/login', methods = ['POST'])
 def authenticate():
-    user = db.db.check_login(request.get_json['user'], request.get_json['password'])
+    user = db.db.check_login(request.get_json('user'), request.get_json('password'))
     if not user:
         failure = {'message': 'Invalid credentials', 'status': 401}
         return jsonify(failure)
