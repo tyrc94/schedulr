@@ -8,9 +8,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `priority` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`level`	TEXT NOT NULL
+	`level`	TEXT UNIQUE NOT NULL
 );
-INSERT INTO priority (level) VALUES ('Lowest'), ('Low'), ('Medium'), ('High'), ('Highest');
+
+INSERT OR IGNORE INTO priority VALUES (1,'Lowest'), (2,'Low'), (3,'Medium'), (4,'High'), (5,'Highest');
 
 
 CREATE TABLE IF NOT EXISTS `tasks` (

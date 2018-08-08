@@ -29,7 +29,7 @@ def signup():
                             )  
 
     if not success:
-        return "ERROR"
+        return "ERROR", 400
     else:
         identity = {
                 'username': data.get('username'),
@@ -38,8 +38,7 @@ def signup():
                 'surname': data.get('surname') 
             }
 
-        return jsonify(identity), 200
-
+        return jsonify(identity)
         
 
 @app.route('/authenticate/login', methods = ['POST'])
@@ -49,7 +48,7 @@ def authenticate():
     user = db.db.check_login(data.get('username'), data.get('password'))
     if not user:
         failure = {'message': 'Invalid credentials', 'status': 401}
-        return jsonify(failure)
+        return jsonify(failure), 401
     else:
         token = jwt.encode({'user_id': user['id']}, 'secret', algorithm='HS256')
         success = {
@@ -80,6 +79,23 @@ def create_task():
 
     db.db.create_task(**task_details)
     return jsonify(task_details)
+
+
+@app.route('/task/add_collaborators', methods = ['POST'])
+def add_collaborators():
+    data = request.get_json()
+
+    collaborators = data.get('username')
+    collaborator_ids = [db.db.find_user_id(x)[0]['id'] for x in collaborators]
+
+    add = {
+        'task_id': int(data.get('task_id')),
+        'user_ids': collaborator_ids
+    }
+    
+    db.db.add_collaborators(**add)
+
+    return jsonify(add)
 
 if __name__ == "__main__":
     app.run()

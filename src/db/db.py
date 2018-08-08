@@ -61,13 +61,15 @@ def register(username, password, forename, surname):
         _ = mutate_db("INSERT INTO users (username, password, forename, surname) VALUES (?,?,?,?)",
                     [username, password, forename, surname])
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
 def user_details(user_id):
     return query_db('SELECT * FROM users WHERE id = ?', [user_id])
 
+def find_user_id(username):
+    return query_db('SELECT id FROM users WHERE username = ?', [username])
 
 def create_task(name, description, priority):
     return mutate_db("INSERT INTO tasks (name, description, priority_id) VALUES (?, ?, ?)", 
@@ -87,7 +89,7 @@ def delete_task(task_id):
 
 def add_collaborators(task_id, user_ids):
     for user_id in user_ids:
-        mutate_db("INSERT INTO collaborators (user_id, task_id) VALUES (?, ?)", [task_id, user_id])
+        mutate_db("INSERT INTO collaborators (user_id, task_id) VALUES (?, ?)", [user_id, task_id])
 
 
 def remove_collaborators(task_id, user_ids):
