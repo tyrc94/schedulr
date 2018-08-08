@@ -48,7 +48,7 @@ def close_connection(exception):
 
 
 def check_login(username, password):
-    user = query_db('SELECT * FROM User WHERE email = ? AND password = ?',
+    user = query_db('SELECT * FROM users WHERE username = ? AND password = ?',
                 [username, password], one=True)
     if user is None:
         return False
