@@ -19,7 +19,10 @@ CREATE TABLE IF NOT EXISTS `tasks` (
 	`name`	TEXT NOT NULL,
 	`description`	TEXT NOT NULL,
 	`priority_id`	INTEGER NOT NULL,
-	FOREIGN KEY(`priority_id`) REFERENCES `priority`(`id`)
+	`owner_id` INTEGER NOT NULL,
+	FOREIGN KEY(`priority_id`) REFERENCES `priority`(`id`),
+	FOREIGN KEY(`owner_id`) REFERENCES `users`(`id`)
+	
 );
 
 CREATE TABLE IF NOT EXISTS `collaborators` (

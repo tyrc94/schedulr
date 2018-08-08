@@ -71,9 +71,9 @@ def user_details(user_id):
 def find_user_id(username):
     return query_db('SELECT id FROM users WHERE username = ?', [username])
 
-def create_task(name, description, priority):
-    return mutate_db("INSERT INTO tasks (name, description, priority_id) VALUES (?, ?, ?)", 
-                [name, description, priority])
+def create_task(name, description, priority, owner_id):
+    return mutate_db("INSERT INTO tasks (name, description, priority_id, owner_id) VALUES (?, ?, ?, ?)", 
+                [name, description, priority, owner_id])
 
 
 def update_task(task_id, name = None, description = None, priority = None):
