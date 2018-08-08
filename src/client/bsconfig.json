@@ -18,7 +18,11 @@
   "suffix": ".bs.js",
   "namespace": true,
   "bs-dependencies": [
-    "reason-react"
+    "reason-react",
+    "@jsiebern/bs-material-ui"
+  ],
+  "ppx-flags": [
+    "./node_modules/@jsiebern/bs-material-ui/ppx_withStyles"
   ],
   "refmt": 3
 }

@@ -2,7 +2,7 @@ import sqlite3
 from flask import g, Flask
 app = Flask(__name__)
 
-DATABASE = './db/database.db'
+DATABASE = './src/db/database.db'
 
 def make_dicts(cursor, row):
     return dict((cursor.description[idx][0], value)
@@ -58,10 +58,10 @@ def check_login(username, password):
 
 def register(username, password, forename, surname):
     try:
-        user = mutate_db("INSERT INTO User (email, password, forename, surname) VALUES (?,?,?,?)",
+        _ = mutate_db("INSERT INTO User (email, password, forename, surname) VALUES (?,?,?,?)",
                     [username, password, forename, surname])
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -75,10 +75,10 @@ def create_task(name, description, priority):
 
 
 def update_task(task_id, name = None, description = None, priority = None):
-    params = {'name': name, 'description': description, 'priority': priority}
-    dct = {k: v for k, v in params if v is not None}
-    for arg in dct:
-        mutate_db("UPDATE tasks SET ? = ? WHERE task_id = ?", [arg, dct[arg], task_id])
+    task = {'name': name, 'description': description, 'priority': priority}
+    task_update = {k: v for k, v in task if v is not None}
+    for arg in task_update:
+        mutate_db("UPDATE tasks SET ? = ? WHERE task_id = ?", [task, task_update[arg], task_id])
 
 
 def delete_task(task_id):
@@ -87,9 +87,9 @@ def delete_task(task_id):
 
 def add_collaborators(task_id, user_ids):
     for user_id in user_ids:
-        mutate_db("INSERT INTO collaborators (user_id, task_id) VALUES (?, ?)", [task_id, user_ids])
+        mutate_db("INSERT INTO collaborators (user_id, task_id) VALUES (?, ?)", [task_id, user_id])
 
 
 def remove_collaborators(task_id, user_ids):
     for user_id in user_ids:
-        mutate_db("DELETE FROM collaborators WHERE task_id = ? AND user_id = ?", [task_id, user_ids])
+        mutate_db("DELETE FROM collaborators WHERE task_id = ? AND user_id = ?", [task_id, user_id])
