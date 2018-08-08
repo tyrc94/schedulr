@@ -8,25 +8,34 @@ type action =
   | LogIn(User.t)
 ;
 
+let login = ((username, password), self) => {
+  User.login(username, password)
+    |> Js.Promise.then_ (
+      (user) => self.ReasonReact.send(LogIn(user)) |> Js.Promise.resolve
+    )
+    |> ignore
+};
+
+
 let component = ReasonReact.reducerComponent("App");
 
 let make = (_children) => {
-  let login = ((username, password), self) => {
-    User.login(username, password)
-      |> Js.Promise.then_ (
-        (user) => self.ReasonReact.send(LogIn(user)) |> Js.Promise.resolve
-      )
-      |> ignore
-  };
-  {
-    ...component,
-    initialState: () => { user: None },
-    reducer: (action, _state) => {
-      switch (action) {
-      | LogIn(user) => ReasonReact.Update({ user: Some(user) })
-      }
-    },
-    render: (self) =>
+  ...component,
+  initialState: () => { user: None },
+  reducer: (action, _state) => {
+    switch (action) {
+    | LogIn(user) => ReasonReact.Update({ user: Some(user) })
+    }
+  },
+  render: (self) => {
+    let signup = (signupRequest) => {
+      User.signup(signupRequest)
+        |> Js.Promise.then_ (
+          (result) => Js.log(result) |> Js.Promise.resolve
+        )
+    };
+
+    (
       <div className="App">
         <Header user=self.state.user/>
 
@@ -34,10 +43,11 @@ let make = (_children) => {
           {
             switch self.state.user {
             | Some(_user) => <Main />
-            | None => <Login onSubmit={ self.handle(login) } />
+            | None => <LoginSection login={ self.handle(login) } signup />
             };
           }
         </div>
       </div>
+    )
   }
 };

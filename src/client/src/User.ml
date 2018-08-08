@@ -6,6 +6,20 @@ type t = {
   surname: string;
 };;
 
+type signup_request = {
+  username: string;
+  password: string;
+  forename: string;
+  surname: string;
+};;
+
+let create_signup_request ~username ~password ~forename ~surname = {
+  username;
+  password;
+  forename;
+  surname;
+};;
+
 let create ~id ~username () = {
   id;
   username;
@@ -35,4 +49,18 @@ let login username password =
   |> then_ (
     fun result -> create_from_json result |> resolve
   )
+;;
 
+let signup { forename; surname; username; password } =
+  let open Js.Promise in
+  let req_init = Api.make_request_init [
+    ("forename", Js.Json.string forename);
+    ("surname", Js.Json.string surname);
+    ("username", Js.Json.string username);
+    ("password", Js.Json.string password)
+  ] in
+  Fetch.fetchWithInit "/signup" req_init
+  |> then_ (
+    fun _ -> resolve ()
+  )
+;;
