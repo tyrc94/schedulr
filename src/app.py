@@ -20,25 +20,25 @@ def server_js():
 @app.route('/signup', methods = ['POST'])
 def signup():
     success = db.db.register(
-                                request.form['username'],
-                                request.form['password'],
-                                request.form['forename'],
-                                request.form['surname']
-                            )
+                                request.get_json('username'),
+                                request.get_json('password'),
+                                request.get_json('forename'),
+                                request.get_json('surname')  
+                            )  
 
     if success:
         identity = {
-                'username': request.form['username'],
-                'password': request.form['password'],
-                'forename': request.form['forename'],
-                'surname': request.form['surname']
+                'username': request.get_json('username'),
+                'password': request.get_json('password'),
+                'forename': request.get_json('forename'),
+                'surname': request.get_json('surname') 
             }
         return jsonify(identity)
         
 
 @app.route('/authenticate/login', methods = ['POST'])
 def authenticate():
-    user = db.db.check_login(request.form['user'], request.form['password'])
+    user = db.db.check_login(request.get_json['user'], request.get_json['password'])
     if not user:
         failure = {'message': 'Invalid credentials', 'status': 401}
         return jsonify(failure)
@@ -64,9 +64,9 @@ def get_user(user_id):
 def create_task():
 
     task_details = {
-        'name': request.form['name'],
-        'description': request.form['description'],
-        'priority': request.form['priority']
+        'name': request.get_json('name'),
+        'description': request.get_json('description'),
+        'priority': request.get_json('priority')
     }
 
     db.db.create_task(**task_details)
