@@ -48,7 +48,7 @@ let make = (~onSubmit, _children) => {
             <U.TextField type_="password" fullWidth=true placeholder="Password" label={ReasonReact.string("Password")} value={`String(self.state.password)} onChange={ self.handle(updatePassword) } />
           </div>
 
-          <U.Button className=classes.button variant=`Raised color=`Primary onClick={ (_e) => onSubmit(self.state.username, self.state.password) }>
+          <U.Button className=classes.button variant=`Raised color=`Primary onClick={ (_e) => onSubmit((self.state.username, self.state.password)) }>
             {ReasonReact.string("Log in")}
           </U.Button>
 
